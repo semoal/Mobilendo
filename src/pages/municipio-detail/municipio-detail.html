@@ -1,0 +1,24 @@
+<!--
+  Generated template for the MunicipioDetailPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Municipios de {{firstMunicipio?.Provincia}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list inset>
+    <ion-item *ngFor="let muni of municipios" (click)="goToMap(muni.IDMunicipio)">
+      <h2>{{muni.Municipio}}</h2>
+      <p>Provincia: {{muni.Provincia}}</p>
+      <p>CCAA: {{muni.CCAA}}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>

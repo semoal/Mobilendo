@@ -1,0 +1,23 @@
+<!--
+  Generated template for the ProvDetailPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Provincias de {{firstItem?.CCAA}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list inset>
+    <ion-item *ngFor="let provincia of data" (click)="goTo(provincia.IDPovincia)">
+      <h2>{{provincia.Provincia}}</h2>
+      <p>{{provincia.CCAA}}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
