@@ -1,14 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import {
-  GoogleMaps,
-  GoogleMap,
-  GoogleMapsEvent,
-  GoogleMapOptions,
-  CameraPosition,
-  MarkerOptions,
-  Marker
-} from '@ionic-native/google-maps';
+import {GoogleMaps, GoogleMap, GoogleMapsEvent, GoogleMapOptions, Marker, LatLng} from '@ionic-native/google-maps';
 import { ProvinciasProvider } from '../../providers/provincias/provincias';
 import { EstacionDetailPage } from '../../pages/estacion-detail/estacion-detail';
 
@@ -43,14 +35,14 @@ export class MapDetailPage {
   }
 
   loadMap() {
+    let mapElement = document.getElementById('map_canvas');
     let mapOptions: GoogleMapOptions = {
       camera: {
         target: {
           lat: parseFloat(this.estaciones.ListaEESSPrecio[0]["Latitud"].replace(/,/, '.')),
           lng: parseFloat(this.estaciones.ListaEESSPrecio[0]["Longitud (WGS84)"].replace(/,/, '.'))
         },
-        zoom: 15,
-        tilt: 30,
+        zoom: 10
       },
       controls: {
         compass: false,
@@ -59,36 +51,43 @@ export class MapDetailPage {
         zoom: false
       }
     };
-
-    this.map = GoogleMaps.create('map_canvas', mapOptions);
+    this.map = this.googleMaps.create(mapElement, mapOptions);
 
     this.map.one(GoogleMapsEvent.MAP_READY)
       .then(() => {
+        this.map.on(GoogleMapsEvent.MAP_CLICK).subscribe(() => {
+          console.log('MAP Clicked');
+        });
+
         this.estaciones.ListaEESSPrecio.forEach(element => {
           this.createMarker(parseFloat(element.Latitud.replace(/,/, '.')), parseFloat(element["Longitud (WGS84)"].replace(/,/, '.')), element);
         });
-      })
-      .catch(error => {
-        console.log(error);
+        
       });
-
   }
 
-  createMarker(lat:number, lng: number, estacion: any){      
-    this.map.addMarker({
-      icon: 'blue',
-      animation: 'DROP',
-      position: {
-        lat: lat,
-        lng: lng
-      }
-    }).then(
-      (marker: Marker) => {
-        this.map.addEventListener(GoogleMapsEvent.MARKER_CLICK).subscribe((data)=> {
-          this.navCtrl.push(EstacionDetailPage, JSON.stringify(estacion));
+  createMarker(latitud: any, longitud: any, estacion: any) {
+    return this.map.addMarker({
+        title: this.createInfo(estacion),
+        icon: 'blue',
+        animation: 'DROP',
+        position: {
+          lat: latitud,
+          lng: longitud
+        }
+    }).then((marker: Marker) => {
+      console.log('marker added');
+      marker.on(GoogleMapsEvent.MARKER_CLICK)
+        .subscribe(() => {
+          alert(JSON.stringify(estacion));
         });
-      }
-    );
-  }
-
+    });
 }
+
+  createInfo(element: any){
+    return JSON.stringify(element);
+  }
+}  
+
+
+
